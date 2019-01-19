@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Implementation-Title: SCM
+Implementation-Version: v1.0
+Built-By: 猫熊小才天
+Implementation-Vendor-Id: com.mxxd
+Created-By: IntelliJ IDEA
+Build-Jdk: 1.8.0_161
+Main-Class: ${start-class}
+

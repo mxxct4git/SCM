@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mxxd.SCM.Dao.ProductMapper" >
+
+    <resultMap id="productMap" type="com.mxxd.SCM.Entity.ProductEntity" >
+        <id column="product_id" property="id" />
+        <result column="factory_id" property="factory_id" />
+        <result column="factory_name" property="factory_name" />
+        <result column="product_main_code" property="main_code" />
+        <result column="product_code" property="code" />
+        <result column="product_name" property="name" />
+        <result column="comment" property="comment" />
+    </resultMap>
+
+    <select id="queryProduct" resultMap="productMap">
+        select product.*,factory.factory_name
+        from product,factory
+        where 1=1 and product.factory_id = factory.factory_id
+        <if test="id !=null and id !='' ">
+            and product_id = #{id}
+        </if>
+        <if test="name !=null and name !='' ">
+            and product_name like "%" #{name} "%"
+        </if>
+        <if test="main_code !=null and main_code !='' ">
+            and product_main_code like "%" #{main_code} "%"
+        </if>
+        <if test="code !=null and code !='' ">
+            and product_code like "%" #{code} "%"
+        </if>
+        <if test="factory_id !=null and factory_id !='' ">
+            and product.factory_id = #{factory_id}
+        </if>
+    </select>
+
+    <insert id="insert" parameterType="com.mxxd.SCM.Entity.ProductEntity" >
+       INSERT INTO
+       		product
+       		(factory_id,product_main_code,product_code,product_name,comment)
+       	VALUES
+       		(#{factory_id}, #{main_code}, #{code},#{name},#{comment})
+    </insert>
+
+    <update id="update" parameterType="com.mxxd.SCM.Entity.ProductEntity" >
+        UPDATE
+        product
+        SET
+        <if test="main_code != null and main_code != ''">product_main_code = #{main_code}</if>
+        <if test="factory_id != null and factory_id != ''">,factory_id = #{factory_id}</if>
+        <if test="code != null and code != ''">,product_code = #{code}</if>
+        <if test="name != null and name != ''">,product_name = #{name}</if>
+        <if test="comment != null and comment != ''">,comment = #{comment}</if>
+        WHERE
+        product_id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="Integer" >
+       DELETE FROM
+       		 product
+       WHERE
+       		 product_id =#{0}
+    </delete>
+
+    <select id="queryCodes" resultMap="productMap">
+        select product.*,factory.factory_name
+        from product,factory
+        where product.factory_id = factory.factory_id
+        <if test="id !=null and id !='' ">
+            and product.product_id = #{id}
+        </if>
+        <if test="name !=null and name !='' ">
+            and product.product_name like "%" #{name} "%"
+        </if>
+        <if test="main_code !=null and main_code !='' ">
+            and product.product_main_code = #{main_code}
+        </if>
+        <if test="code !=null and code !='' ">
+            and product.product_code = #{code}
+        </if>
+        <if test="factory_id !=null and factory_id !='' ">
+            and product.product.factory_id = #{factory_id}
+        </if>
+        ORDER BY product.product_main_code ASC, product.factory_id ASC
+    </select>
+
+    <update id="insert_main_code_update" parameterType="com.mxxd.SCM.Entity.ProductEntity" >
+        UPDATE
+        product
+        SET
+        product_main_code = #{main_code}
+        WHERE
+        factory_id = #{factory_id} and product_code = #{code}
+    </update>
+
+    <update id="delete_main_code_update" parameterType="Integer" >
+        UPDATE
+        product
+        SET
+        product_main_code = ""
+        WHERE
+        product_id =#{0}
+    </update>
+
+    <select id="ajax_queryMainCode" resultMap="productMap">
+        select product.*,factory.factory_name from product,factory
+        where product.factory_id = factory.factory_id AND product.factory_id
+        in(select factory.factory_id from factory where is_main_factory = '2') order BY product.factory_id ASC;
+    </select>
+
+    <select id="ajax_queryMainCode_id" resultMap="productMap">
+        select product.*,factory.factory_name from product,factory
+        where product.factory_id = factory.factory_id AND product.factory_id
+        in(select factory.factory_id from factory where is_main_factory = '2' and factory.factory_id = #{0}) order BY product.factory_id ASC;
+    </select>
+
+    <select id="ajax_queryCodes" resultMap="productMap">
+        select product.*,factory.factory_name from product,factory
+        where product.factory_id = factory.factory_id AND product.factory_id
+        in(select factory.factory_id from factory where is_main_factory &lt;&gt; '2') order BY product.factory_id ASC
+    </select>
+
+    <select id="ajax_queryCodes_id" resultMap="productMap">
+        select product.*,factory.factory_name from product,factory
+        where product.factory_id = factory.factory_id AND product.factory_id
+        in(select factory.factory_id from factory where is_main_factory &lt;&gt; '2' and factory.factory_id = #{0}) order BY product.factory_id ASC
+    </select>
+
+    <select id="ajax_queryCodes_MCode" resultMap="productMap">
+        select product.*,factory.factory_name from product,factory
+        where product.factory_id = factory.factory_id AND product.product_main_code = #{0} order BY product.factory_id ASC;
+    </select>
+
+</mapper>

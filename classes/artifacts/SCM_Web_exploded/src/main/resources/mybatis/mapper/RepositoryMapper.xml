@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mxxd.SCM.Dao.RepositoryMapper" >
+
+    <resultMap id="repositoryMap" type="com.mxxd.SCM.Entity.RepositoryEntity" >
+        <id column="repository_id" property="id" />
+        <result column="factory_id" property="factory_id" />
+        <result column="factory_name" property="factory_name" />
+        <result column="repository_name" property="name" />
+        <result column="repository_address" property="address" />
+        <result column="repository_manager" property="manager" />
+        <result column="repository_manager_phone" property="manager_phone" />
+        <result column="repository_manager_email" property="manager_email" />
+        <result column="repository_volume" property="volume" />
+        <result column="comment" property="comment" />
+    </resultMap>
+
+    <select id="queryRepository" resultMap="repositoryMap">
+        select repository.*,factory.factory_name
+        from repository,factory
+        where repository.factory_id = factory.factory_id
+        <if test="id !=null and id !='' ">
+            and repository_id = #{id}
+        </if>
+        <if test="name !=null and name !='' ">
+            and repository_name like "%" #{name} "%"
+        </if>
+        <if test="manager !=null and manager !='' ">
+            and repository_manager like "%" #{manager} "%"
+        </if>
+        <if test="manager_phone !=null and manager_phone !='' ">
+            and repository_manager_phone like "%" #{manager_phone} "%"
+        </if>
+        <if test="factory_id !=null and factory_id !='' ">
+            and repository.factory_id = #{factory_id}
+        </if>
+    </select>
+
+    <insert id="insert" parameterType="com.mxxd.SCM.Entity.RepositoryEntity" >
+       INSERT INTO
+       		repository
+       		(factory_id,repository_name,repository_address,repository_manager,repository_manager_phone,repository_manager_email,repository_volume,comment)
+       	VALUES
+       		(#{factory_id}, #{name}, #{address},#{manager},#{manager_phone},#{manager_email},#{volume},#{comment})
+    </insert>
+
+    <update id="update" parameterType="com.mxxd.SCM.Entity.RepositoryEntity" >
+        UPDATE
+        repository
+        SET
+        <if test="name != null and name != ''">repository_name = #{name}</if>
+        <if test="factory_id != null and factory_id != ''">,factory_id = #{factory_id}</if>
+        <if test="address != null and address != ''">,repository_address = #{address}</if>
+        <if test="manager != null and manager != ''">,repository_manager = #{manager}</if>
+        <if test="manager_phone != null and manager_phone != ''">,repository_manager_phone = #{manager_phone}</if>
+        <if test="manager_email != null and manager_email != ''">,repository_manager_email = #{manager_email}</if>
+        <if test="volume != null and volume != ''">,repository_volume = #{volume}</if>
+        <if test="comment != null and comment != ''">,comment = #{comment}</if>
+        WHERE
+        repository_id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="Integer" >
+       DELETE FROM
+       		 repository
+       WHERE
+       		 repository_id =#{0}
+    </delete>
+
+    <select id="ajax_queryRepository" resultMap="repositoryMap">
+        select repository.*,factory.factory_name
+        from repository,factory
+        where repository.factory_id = factory.factory_id
+        ORDER BY repository.repository_id ASC
+    </select>
+
+    <select id="ajax_queryRepository_id" resultMap="repositoryMap">
+        select repository.*,factory.factory_name
+        from repository,factory
+        where repository.factory_id = factory.factory_id
+        and repository.factory_id = #{0}
+        ORDER BY repository.repository_id ASC
+    </select>
+
+</mapper>

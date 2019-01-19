@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mxxd.SCM.Dao.IncomeMapper" >
+
+    <resultMap id="incomeMap" type="com.mxxd.SCM.Entity.IncomeEntity" >
+        <id column="income_id" property="id" />
+        <result column="outlist_timestamp" property="outlist_timestamp" />
+        <result column="out_date" property="out_date" />
+        <result column="income_total" property="income_total" />
+        <result column="is_income_complete" property="is_income_complete" />
+    </resultMap>
+
+    <select id="queryIncome" parameterType="com.mxxd.SCM.Entity.IncomeEntity" resultMap="incomeMap">
+        select income.*,outlist.out_date
+        from income,outlist
+        where 1=1 and income.outlist_timestamp = outlist.out_timestamp
+        <if test="id !=null and id != ''">
+            and income.income_id = #{id}
+        </if>
+        <if test="outlist_timestamp !=null and outlist_timestamp != ''">
+            and outlist.out_timestamp = #{outlist_timestamp}
+        </if>
+        <if test="date_lower !=null and date_lower != ''">
+            and outlist.out_date &gt;= #{date_lower}
+        </if>
+        <if test="date_upper !=null and date_upper !='' ">
+            and outlist.out_date &lt;= #{date_upper}
+        </if>
+        <if test="is_income_complete !=null and is_income_complete !='' ">
+            and income.is_income_complete = #{is_income_complete}
+        </if>
+    </select>
+
+    <insert id="insert" parameterType="com.mxxd.SCM.Entity.IncomeEntity" >
+       INSERT INTO
+       		income
+       		(outlist_timestamp,income_total,is_income_complete)
+       	VALUES
+       		(#{outlist_timestamp}, #{income_total}, #{is_income_complete})
+    </insert>
+
+    <update id="update" parameterType="com.mxxd.SCM.Entity.IncomeEntity" >
+        UPDATE
+        income
+        SET
+        <if test="outlist_timestamp != null and outlist_timestamp != ''">outlist_timestamp = #{outlist_timestamp}</if>
+        <if test="income_total != null and income_total != ''">,income_total = #{income_total}</if>
+        <if test="is_income_complete != null and is_income_complete != ''">,is_income_complete = #{is_income_complete}</if>
+        WHERE
+        income_id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="Integer" >
+       DELETE FROM
+       		 income
+       WHERE
+       		 income_id =#{0}
+    </delete>
+
+    <delete id="deleteByTime" parameterType="String" >
+       DELETE FROM
+       		 income
+       WHERE
+       		 outlist_timestamp =#{0}
+    </delete>
+
+    <select id="month_income" parameterType="String" resultType="String">
+        select SUM(income.income_total) from income,outlist where income.outlist_timestamp = outlist.out_timestamp
+        and outlist.out_date like #{0}"%"
+    </select>
+
+</mapper>

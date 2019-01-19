@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mxxd.SCM.Dao.DeployMapper" >
+
+    <resultMap id="deployMap" type="com.mxxd.SCM.Entity.DeployEntity" >
+        <id column="deploy_id" property="id" />
+        <result column="source_factory_id" property="source_factory_id" />
+        <result column="source_repository_id" property="source_repository_id" />
+        <result column="source_product_main_code" property="source_product_main_code" />
+        <result column="source_product_code" property="source_product_code" />
+        <result column="aim_factory_id" property="aim_factory_id" />
+        <result column="aim_repository_id" property="aim_repository_id" />
+        <result column="aim_product_main_code" property="aim_product_main_code" />
+        <result column="aim_product_code" property="aim_product_code" />
+        <result column="product_color" property="product_color" />
+        <result column="product_size" property="product_size" />
+        <result column="product_density" property="product_density" />
+        <result column="product_makou" property="product_makou" />
+        <result column="product_mashu" property="product_mashu" />
+        <result column="deploy_quantity" property="deploy_quantity" />
+        <result column="deploy_date" property="deploy_date" />
+        <result column="comment" property="comment" />
+    </resultMap>
+
+    <select id="queryDeployIn" resultMap="deployMap">
+        select *
+        from deploy
+        where 1=1
+        <if test="id !=null and id !='' ">
+            and deploy_id = #{id}
+        </if>
+        <if test="aim_factory_id !=null and aim_factory_id !='' ">
+            and aim_factory_id = #{aim_factory_id}
+        </if>
+        <if test="aim_repository_id !=null and aim_repository_id !='' ">
+            and aim_repository_id = #{aim_repository_id}
+        </if>
+        <if test="aim_product_main_code !=null and aim_product_main_code !='' ">
+            and aim_product_main_code = #{aim_product_main_code}
+        </if>
+        <if test="aim_product_code !=null and aim_product_code !='' ">
+            and aim_product_code = #{aim_product_code}
+        </if>
+        <if test="deploy_date !=null and deploy_date !='' ">
+            and deploy_date = #{deploy_date}
+        </if>
+    </select>
+
+    <select id="queryDeployOut" resultMap="deployMap">
+        select *
+        from deploy
+        where 1=1
+        <if test="id !=null and id !='' ">
+            and deploy_id = #{id}
+        </if>
+        <if test="source_factory_id !=null and source_factory_id !='' ">
+            and source_factory_id = #{source_factory_id}
+        </if>
+        <if test="source_repository_id !=null and source_repository_id !='' ">
+            and source_repository_id = #{source_repository_id}
+        </if>
+        <if test="source_product_main_code !=null and source_product_main_code !='' ">
+            and source_product_main_code = #{source_product_main_code}
+        </if>
+        <if test="source_product_code !=null and source_product_code !='' ">
+            and source_product_code = #{source_product_code}
+        </if>
+        <if test="deploy_date !=null and deploy_date !='' ">
+            and deploy_date = #{deploy_date}
+        </if>
+    </select>
+
+    <insert id="insert" parameterType="com.mxxd.SCM.Entity.DeployEntity" >
+       INSERT INTO
+       		deploy
+       		(source_factory_id,source_repository_id,source_product_main_code,source_product_code,
+       		aim_factory_id,aim_repository_id,aim_product_main_code,aim_product_code,
+       		product_color,product_size,product_density,product_makou,product_mashu,
+       		deploy_quantity,deploy_date,comment)
+       	VALUES
+       		(#{source_factory_id}, #{source_repository_id}, #{source_product_main_code}, #{source_product_code},
+       		#{aim_factory_id},#{aim_repository_id},#{aim_product_main_code},#{aim_product_code},
+       		#{product_color},#{product_size},#{product_density},#{product_makou},
+       		#{product_mashu},#{deploy_quantity},#{deploy_date},#{comment})
+    </insert>
+
+    <update id="update" parameterType="com.mxxd.SCM.Entity.DeployEntity" >
+        UPDATE
+        deploy
+        SET
+        <if test="source_factory_id != null and source_factory_id != ''">source_factory_id = #{source_factory_id}</if>
+        <if test="source_repository_id != null and source_repository_id != ''">,source_repository_id = #{source_repository_id}</if>
+        <if test="source_product_main_code != null and source_product_main_code != ''">,source_product_main_code = #{source_product_main_code}</if>
+        <if test="source_product_code != null and source_product_code != ''">,source_product_code = #{source_product_code}</if>
+        <if test="aim_factory_id != null and aim_factory_id != ''">,aim_factory_id = #{aim_factory_id}</if>
+        <if test="aim_repository_id != null and aim_repository_id != ''">,aim_repository_id = #{aim_repository_id}</if>
+        <if test="aim_product_main_code != null and aim_product_main_code != ''">,aim_product_main_code = #{aim_product_main_code}</if>
+        <if test="aim_product_code != null and aim_product_code != ''">,aim_product_code = #{aim_product_code}</if>
+        <if test="product_color != null and product_color != ''">,product_color = #{product_color}</if>
+        <if test="product_size != null and product_size != ''">,product_size = #{product_size}</if>
+        <if test="product_density != null and product_density != ''">,product_density = #{product_density}</if>
+        <if test="product_makou != null and product_makou != ''">,product_makou = #{product_makou}</if>
+        <if test="product_mashu != null and product_mashu != ''">,product_mashu = #{product_mashu}</if>
+        <if test="deploy_quantity != null and deploy_quantity != ''">,deploy_quantity = #{deploy_quantity}</if>
+        <if test="deploy_date != null and deploy_date != ''">,deploy_date = #{deploy_date}</if>
+        <if test="comment != null and comment != ''">,comment = #{comment}</if>
+        WHERE
+        deploy_id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="Integer" >
+       DELETE FROM
+       		 deploy
+       WHERE
+       		 deploy_id =#{0}
+    </delete>
+
+</mapper>

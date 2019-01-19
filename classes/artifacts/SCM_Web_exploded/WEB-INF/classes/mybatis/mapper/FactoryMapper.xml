@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mxxd.SCM.Dao.FactoryMapper" >
+
+    <resultMap id="factoryMap" type="com.mxxd.SCM.Entity.FactoryEntity" >
+        <id column="factory_id" property="id" />
+        <result column="factory_name" property="name" />
+        <result column="factory_address" property="address" />
+        <result column="factory_manager" property="manager" />
+        <result column="factory_manager_phone" property="manager_phone" />
+        <result column="factory_manager_email" property="manager_email" />
+        <result column="is_main_factory" property="is_main_factory" />
+        <result column="comment" property="comment" />
+    </resultMap>
+
+    <select id="queryFactory" resultMap="factoryMap">
+        select *
+        from factory
+        where 1=1
+        <if test="id !=null and id !='' ">
+            and factory_id = #{id}
+        </if>
+        <if test="name !=null and name !='' ">
+            and factory_name like "%" #{name} "%"
+        </if>
+        <if test="manager !=null and manager !='' ">
+            and factory_manager like "%" #{manager} "%"
+        </if>
+        <if test="manager_phone !=null and manager_phone !='' ">
+            and factory_manager_phone = #{manager_phone}
+        </if>
+        <if test="is_main_factory !=null and is_main_factory !='' ">
+            and is_main_factory = #{is_main_factory}
+        </if>
+    </select>
+
+    <insert id="insert" parameterType="com.mxxd.SCM.Entity.FactoryEntity" >
+       INSERT INTO
+       		factory
+       		(factory_name,factory_address,factory_manager,factory_manager_phone,factory_manager_email,is_main_factory,comment)
+       	VALUES
+       		(#{name}, #{address}, #{manager},#{manager_phone},#{manager_email},#{is_main_factory},#{comment})
+    </insert>
+
+    <update id="update" parameterType="com.mxxd.SCM.Entity.FactoryEntity" >
+        UPDATE
+        factory
+        SET
+        <if test="name != null and name != ''">factory_name = #{name}</if>
+        <if test="address != null and address != ''">,factory_address = #{address}</if>
+        <if test="manager != null and manager != ''">,factory_manager = #{manager}</if>
+        <if test="manager_phone != null and manager_phone != ''">,factory_manager_phone = #{manager_phone}</if>
+        <if test="manager_email != null and manager_email != ''">,factory_manager_email = #{manager_email}</if>
+        <if test="is_main_factory != null and is_main_factory != ''">,is_main_factory = #{is_main_factory}</if>
+        <if test="comment != null and comment != ''">,comment = #{comment}</if>
+        WHERE
+        factory_id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="Integer" >
+       DELETE FROM
+       		 factory
+       WHERE
+       		 factory_id =#{0}
+    </delete>
+
+    <select id="ajax_queryFactory" resultMap="factoryMap">
+        select * from factory ORDER BY is_main_factory ASC,factory_id ASC
+    </select>
+
+    <select id="ajax_queryMainFactory" resultMap="factoryMap">
+        select * from factory where is_main_factory = '2' ORDER BY factory_id ASC
+    </select>
+
+    <select id="ajax_queryOtherFactory" resultMap="factoryMap">
+        select * from factory where is_main_factory &lt;&gt; '2' ORDER BY is_main_factory ASC,factory_id ASC
+    </select>
+
+</mapper>

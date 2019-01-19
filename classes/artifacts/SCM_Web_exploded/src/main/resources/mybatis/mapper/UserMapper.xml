@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mxxd.SCM.Dao.UserMapper" >
+
+    <resultMap id="userMap" type="com.mxxd.SCM.Entity.UserEntity" >
+        <id column="user_id" property="id" />
+        <result column="user_username" property="username" />
+        <result column="user_password" property="password" />
+        <result column="user_name" property="name" />
+        <result column="user_phone" property="phone" />
+        <result column="user_email" property="email" />
+        <result column="user_address" property="address" />
+        <result column="user_authority" property="authority" />
+        <result column="is_login" property="is_login" />
+    </resultMap>
+
+    <select id="login" parameterType="String" resultMap="userMap">
+		select *
+		from users where user_username = #{0} and user_password = #{1}
+	</select>
+
+    <select id="queryUser" resultMap="userMap">
+        select *
+        from users
+        where 1=1
+        <if test="id !=null and id != ''">
+            and user_id = #{id}
+        </if>
+        <if test="authority !=null and authority != ''">
+            and user_authority = #{authority}
+        </if>
+        <if test="username !=null and username !='' ">
+            and user_username  like "%" #{username}"%"
+        </if>
+        <if test="phone !=null and phone !='' ">
+            and user_phone like "%" #{phone} "%"
+        </if>
+        <if test="name !=null and name !='' ">
+            and user_name like "%" #{name}"%"
+        </if>
+    </select>
+
+    <insert id="insert" parameterType="com.mxxd.SCM.Entity.UserEntity" >
+       INSERT INTO
+       		users
+       		(user_username,user_password,user_name,user_phone,user_email,user_address,user_authority,is_login)
+       	VALUES
+       		(#{username}, #{password}, #{name},#{phone},#{email},#{address},#{authority},#{is_login})
+    </insert>
+
+    <update id="update" parameterType="com.mxxd.SCM.Entity.UserEntity" >
+        UPDATE
+        users
+        SET
+        <if test="username != null and username != ''">user_username = #{username}</if>
+        <if test="password != null and password != ''">,user_password = #{password}</if>
+        <if test="name != null and name != ''">,user_name = #{name}</if>
+        <if test="phone != null and phone != ''">,user_phone = #{phone}</if>
+        <if test="email != null and email != ''">,user_email = #{email}</if>
+        <if test="address != null and address != ''">,user_address = #{address}</if>
+        <if test="authority != null and authority != ''">,user_authority = #{authority}</if>
+        WHERE
+        user_id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="Integer" >
+       DELETE FROM
+       		 users
+       WHERE
+       		 user_id =#{0}
+    </delete>
+
+</mapper>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mxxd.SCM.Dao.CustomerMapper" >
+
+    <resultMap id="customerMap" type="com.mxxd.SCM.Entity.CustomerEntity" >
+        <id column="customer_id" property="id" />
+        <result column="customer_name" property="name" />
+        <result column="customer_phone" property="phone" />
+        <result column="customer_email" property="email" />
+        <result column="customer_address" property="address" />
+        <result column="customer_classify" property="classify" />
+        <result column="comment" property="comment" />
+    </resultMap>
+
+    <select id="queryCustomer" resultMap="customerMap">
+        select *
+        from customer
+        where 1=1
+        <if test="id !=null and id != ''">
+            and customer_id = #{id}
+        </if>
+        <if test="classify !=null and classify != ''">
+            and customer_classify = #{classify}
+        </if>
+        <if test="name !=null and name !='' ">
+            and customer_name like "%" #{name}"%"
+        </if>
+        <if test="phone !=null and phone !='' ">
+            and customer_phone like "%" #{phone} "%"
+        </if>
+    </select>
+
+    <insert id="insert" parameterType="com.mxxd.SCM.Entity.CustomerEntity" >
+       INSERT INTO
+       		customer
+       		(customer_name,customer_phone,customer_email,customer_address,customer_classify,comment)
+       	VALUES
+       		(#{name}, #{phone}, #{email},#{address},#{classify},#{comment})
+    </insert>
+
+    <update id="update" parameterType="com.mxxd.SCM.Entity.CustomerEntity" >
+        UPDATE
+        customer
+        SET
+        <if test="name != null and name != ''">customer_name = #{name}</if>
+        <if test="phone != null and phone != ''">,customer_phone = #{phone}</if>
+        <if test="email != null and email != ''">,customer_email = #{email}</if>
+        <if test="address != null and address != ''">,customer_address = #{address}</if>
+        <if test="classify != null and classify != ''">,customer_classify = #{classify}</if>
+        <if test="comment != null and comment != ''">,comment = #{comment}</if>
+        WHERE customer_id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="Integer" >
+       DELETE FROM customer WHERE customer_id =#{0}
+    </delete>
+
+    <select id="ajax_queryCustomer" resultMap="customerMap">
+        select * from customer ORDER BY customer_id ASC
+    </select>
+
+</mapper>

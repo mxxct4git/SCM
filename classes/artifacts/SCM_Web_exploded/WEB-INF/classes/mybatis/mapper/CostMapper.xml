@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mxxd.SCM.Dao.CostMapper" >
+
+    <resultMap id="costMap" type="com.mxxd.SCM.Entity.CostEntity" >
+        <id column="cost_id" property="id" />
+        <result column="inlist_timestamp" property="inlist_timestamp" />
+        <result column="in_date" property="in_date" />
+        <result column="cost_total" property="cost_total" />
+        <result column="is_cost_complete" property="is_cost_complete" />
+    </resultMap>
+
+    <select id="queryCost" parameterType="com.mxxd.SCM.Entity.CostEntity" resultMap="costMap">
+        select cost.*,inlist.in_date
+        from cost,inlist
+        where 1 = 1 and cost.inlist_timestamp = inlist.in_timestamp
+        <if test="id !=null and id != ''">
+            and cost.cost_id = #{id}
+        </if>
+        <if test="inlist_timestamp !=null and inlist_timestamp != ''">
+            and inlist.in_timestamp = #{inlist_timestamp}
+        </if>
+        <if test="date_lower !=null and date_lower != ''">
+            and inlist.in_date &gt;= #{date_lower}
+        </if>
+        <if test="date_upper !=null and date_upper !='' ">
+            and inlist.in_date &lt;= #{date_upper}
+        </if>
+        <if test="is_cost_complete !=null and is_cost_complete !='' ">
+            and cost.is_cost_complete = #{is_cost_complete}
+        </if>
+    </select>
+
+    <insert id="insert" parameterType="com.mxxd.SCM.Entity.CostEntity" >
+       INSERT INTO
+       		cost
+       		(inlist_timestamp,cost_total,is_cost_complete)
+       	VALUES
+       		(#{inlist_timestamp}, #{cost_total}, #{is_cost_complete})
+    </insert>
+
+    <update id="update" parameterType="com.mxxd.SCM.Entity.CostEntity" >
+        UPDATE
+        cost
+        SET
+        <if test="inlist_timestamp != null and inlist_timestamp != ''">inlist_timestamp = #{inlist_timestamp}</if>
+        <if test="cost_total != null and cost_total != ''">,cost_total = #{cost_total}</if>
+        <if test="is_cost_complete != null and is_cost_complete != ''">,is_cost_complete = #{is_cost_complete}</if>
+        WHERE
+        cost_id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="Integer" >
+       DELETE FROM
+       		 cost
+       WHERE
+       		 cost_id =#{0}
+    </delete>
+
+    <delete id="deleteByTime" parameterType="String" >
+       DELETE FROM
+       		 cost
+       WHERE
+       		 inlist_timestamp =#{0}
+    </delete>
+
+    <select id="month_cost" parameterType="String" resultType="String">
+        select SUM(cost.cost_total) from cost,inlist where cost.inlist_timestamp = inlist.in_timestamp
+        and inlist.in_date like #{0}"%"
+    </select>
+
+</mapper>
